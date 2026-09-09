@@ -1,0 +1,76 @@
+# Publish the wheelhouse artifact from a completed wheels run.
+# Modeled on the upstream project_superdex publish workflow, reduced to two
+# wheels and gated on tagged refs. PyPI publication uses Trusted Publishing;
+# configure the publisher for superdex-physics-uni / superdex-robotics-uni on
+# PyPI before using target=pypi.
+
+name: publish wheels
+
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: "Validate only, publish to TestPyPI, or publish to PyPI"
+        type: choice
+        options:
+          - validate
+          - testpypi
+          - pypi
+      wheels_run_id:
+        description: "Successful wheels workflow run containing the wheelhouse"
+        required: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: superdex-uni-publish-${{ inputs.target }}
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 30
+    environment: ${{ inputs.target == 'pypi' && 'pypi' || (inputs.target == 'testpypi' && 'testpypi' || 'validate') }}
+    permissions:
+      id-token: write
+    steps:
+      - name: Refuse to publish from a non-tag ref
+        if: inputs.target != 'validate'
+        run: |
+          case "${{ github.ref }}" in
+            refs/tags/v*) ;;
+            *) echo "publish requires a v* tag ref, got ${{ github.ref }}"; exit 1 ;;
+          esac
+
+      - name: Download wheelhouse from the wheels run
+        uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
+        with:
+          name: wheelhouse
+          path: wheelhouse
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ inputs.wheels_run_id }}
+
+      - name: Check wheelhouse completeness
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          wheels = sorted(p.name for p in Path("wheelhouse").glob("*.whl"))
+          print("\n".join(wheels))
+          if len(wheels) != 2 or any("manylinux" not in w for w in wheels):
+              raise SystemExit(f"incomplete or unrepaired wheelhouse: {wheels}")
+          PY
+
+      - name: Publish to TestPyPI
+        if: inputs.target == 'testpypi'
+        uses: pypa/gh-action-pypi-publish@106e0b0b7c337fa67ed433972f777c6357f78598 # v1.13.0
+        with:
+          repository-url: https://test.pypi.org/legacy/
+          packages-dir: wheelhouse
+
+      - name: Publish to PyPI
+        if: inputs.target == 'pypi'
+        uses: pypa/gh-action-pypi-publish@106e0b0b7c337fa67ed433972f777c6357f78598 # v1.13.0
+        with:
+          packages-dir: wheelhouse

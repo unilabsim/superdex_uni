@@ -1,0 +1,70 @@
+# Build the two superdex-uni wheels on ubuntu-22.04 and upload them as one flat
+# wheelhouse artifact. Modeled on the upstream project_superdex wheels workflow,
+# reduced to the only platform this channel validates (Linux x86_64, cp312).
+#
+# Manual dispatch is the only trigger. All build configuration lives in each
+# distribution's packages/*/pyproject.toml, never here, so this file and a local
+# `uv run tools/build_wheels.py` run cannot drift apart.
+#
+# The wheelhouse is publishable as-is:
+#
+#     gh run download <run-id> --name wheelhouse --dir wheelhouse
+#     twine upload wheelhouse/*
+#
+# Every `uses:` is pinned to a 40-character commit SHA, with the release in a
+# trailing comment.
+
+name: wheels
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: wheels-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  CIBUILDWHEEL_VERSION: 4.1.1
+  PYTHON_VERSION: "3.12"
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          submodules: true
+
+      - uses: actions/setup-python@e797f83bcb11b83ae66e0230d6156d7c80228e7c # v6.0.0
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install build drivers
+        run: python -m pip install --upgrade pip "cibuildwheel==${CIBUILDWHEEL_VERSION}" build scikit-build-core setuptools wheel
+
+      - name: Build wheels
+        run: python tools/build_wheels.py --output wheelhouse
+
+      - name: Check wheelhouse completeness
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          wheels = sorted(p.name for p in Path("wheelhouse").glob("*.whl"))
+          print("\n".join(wheels))
+          if len(wheels) != 2:
+              raise SystemExit(f"expected exactly 2 wheels, got {wheels}")
+          for name, dist in zip(wheels, ("superdex_physics_uni", "superdex_robotics_uni"), strict=True):
+              if not (name.startswith(f"{dist}-1.0.0-cp312-cp312-manylinux") and name.endswith("_x86_64.whl")):
+                  raise SystemExit(f"unexpected wheel: {name}")
+          PY
+
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: wheelhouse
+          path: wheelhouse/*.whl
+          retention-days: 30

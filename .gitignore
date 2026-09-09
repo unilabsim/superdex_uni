@@ -1,0 +1,13 @@
+# Staged packaging inputs (produced by tools/stage_sources.py)
+packages/*/superdex/
+packages/*/LICENSE
+packages/*/NOTICE
+packages/*/thirdparty_licenses/
+
+# Build outputs
+build/
+dist/
+wheelhouse/
+packages/*/build/
+__pycache__/
+*.pyc

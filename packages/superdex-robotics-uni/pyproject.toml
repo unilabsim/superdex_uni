@@ -1,0 +1,85 @@
+# Copyright (c) Meta Platforms, Inc. and affiliates.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+#
+# superdex-robotics-uni: unilabsim temporary build of upstream superdex-robotics.
+# The robotics code itself is unchanged; this package exists so the robotics
+# dependency edge points at superdex-physics-uni instead of pulling upstream
+# superdex-physics back into the environment. Mirrors
+# vendor/project_superdex/superdex_robotics/wheels/superdex-robotics/pyproject.toml;
+# every knob change is marked with a [uni] comment.
+
+[build-system]
+requires = ["scikit-build-core>=1.0"]
+build-backend = "scikit_build_core.build"
+
+[project]
+name = "superdex-robotics-uni"  # [uni] renamed from superdex-robotics
+version = "1.0.0"
+requires-python = ">=3.12,<3.13"
+authors = [{name = "SuperDex Team"}, {name = "unilabsim"}]
+description = "Robotics bindings and runtime surfaces for SuperDex (unilabsim temporary build)"
+readme = "README.md"
+license = "Apache-2.0"
+license-files = ["LICENSE", "thirdparty_licenses/**/*"]
+dependencies = ["superdex-physics-uni==1.0.0"]  # [uni] renamed dependency edge
+classifiers = [
+    "Development Status :: 4 - Beta",  # [uni] temporary channel, not upstream-stable
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering",
+]
+
+# [uni] fp64 extras intentionally omitted: this channel ships fp32 only.
+
+[project.urls]
+Homepage = "https://github.com/unilabsim/superdex-uni"
+Repository = "https://github.com/unilabsim/superdex-uni"
+
+[tool.uv]
+managed = false
+
+[tool.scikit-build]
+build-dir = "build/{wheel_tag}"
+# [uni] staged by tools/stage_sources.py from the vendored facade.
+wheel.packages = ["superdex"]
+wheel.install-dir = "superdex/robotics/_native"
+build.targets = ["superdex_robotics_pybind"]
+install.components = ["superdex_robotics_pybind"]
+
+[tool.scikit-build.env]
+CC = { env = "CC" }
+CXX = { env = "CXX" }
+
+[tool.scikit-build.cmake]
+# [uni] points into the pinned vendor submodule instead of "../../..".
+source-dir = "../../vendor/project_superdex"
+args = [
+    "-GNinja",
+    "-DMOCHI_BUILD_DEBUGGER=OFF",
+    "-DMOCHI_BUILD_MESH_CLI=OFF",
+    "-DMOCHI_BUILD_RENDERER=OFF",
+    "-DMOCHI_BUILD_SHARED=ON",
+    "-DMOCHI_USE_PYBIND=ON",
+    "-DSUPERDEX_BUILD_ROBOTICS=ON",
+]
+
+[tool.cibuildwheel]
+build = "cp312-*"
+skip = "*musllinux* *-win32"
+test-skip = "*"
+
+[tool.cibuildwheel.linux]
+environment-pass = ["http_proxy", "https_proxy", "no_proxy"]
+before-all = "yum install -y clang"
+# libmochi_physics / libmochi_pybind_core / libmarl ship inside
+# superdex-physics-uni's _native payload and resolve through RPATH at import time;
+# they must not be vendored into this wheel as well.
+repair-wheel-command = """auditwheel repair -w {dest_dir} {wheel} \
+  --exclude libmochi_physics.so --exclude libmochi_pybind_core.so --exclude 'libmarl.so*'"""
+
+[tool.cibuildwheel.linux.environment]
+CC = "clang"
+CXX = "clang++"

@@ -1,0 +1,94 @@
+# Copyright (c) Meta Platforms, Inc. and affiliates.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+#
+# superdex-physics-uni: unilabsim temporary build of upstream superdex-physics
+# carrying the native batch executor PR. Mirrors
+# vendor/project_superdex/superdex_physics/wheels/superdex-physics/pyproject.toml;
+# every knob change is marked with a [uni] comment.
+
+[build-system]
+requires = ["scikit-build-core>=1.0"]
+build-backend = "scikit_build_core.build"
+
+[project]
+name = "superdex-physics-uni"  # [uni] renamed from superdex-physics
+version = "1.0.0"
+requires-python = ">=3.12,<3.13"
+authors = [{name = "SuperDex Team"}, {name = "unilabsim"}]
+description = "Physics runtime for SuperDex (unilabsim temporary build with the native batch executor)"
+readme = "README.md"
+license = "Apache-2.0"
+license-files = ["LICENSE", "thirdparty_licenses/**/*"]
+dependencies = [
+    "imageio[ffmpeg]>=2.36.1",
+    "numpy",
+    "pillow",
+    "polyscope>=2.5.0,<2.6",
+    "pycollada",
+    "pyre-extensions",
+    "rerun-sdk==0.33.0",
+    "scikit-image",
+    "scipy",
+    "tabulate",
+    "trimesh",
+    "typing_extensions",
+    "unrealcv",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",  # [uni] temporary channel, not upstream-stable
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering",
+]
+
+# [uni] fp64 extras intentionally omitted: this channel ships fp32 only.
+
+[project.urls]
+Homepage = "https://github.com/unilabsim/superdex-uni"
+Repository = "https://github.com/unilabsim/superdex-uni"
+
+[tool.uv]
+managed = false
+
+[tool.scikit-build]
+build-dir = "build/{wheel_tag}"
+# [uni] staged by tools/stage_sources.py from the vendored facade with packaging-only
+# patches applied; the vendored tree itself is never modified.
+wheel.packages = ["superdex"]
+wheel.exclude = ["superdex/physics/internal", "superdex/physics/utils/testing/internal"]
+wheel.install-dir = "superdex/physics/_native"
+build.targets = ["mochi_physics_pybind"]
+install.components = ["mochi_physics_pybind"]
+
+[tool.scikit-build.env]
+CC = { env = "CC" }
+CXX = { env = "CXX" }
+
+[tool.scikit-build.cmake]
+# [uni] points into the pinned vendor submodule instead of "../../..".
+source-dir = "../../vendor/project_superdex"
+args = [
+    "-GNinja",
+    "-DMOCHI_BUILD_DEBUGGER=OFF",
+    "-DMOCHI_BUILD_MESH_CLI=OFF",
+    "-DMOCHI_BUILD_RENDERER=OFF",
+    "-DMOCHI_BUILD_SHARED=ON",
+    "-DMOCHI_USE_PYBIND=ON",
+    "-DSUPERDEX_BUILD_ROBOTICS=OFF",
+]
+
+[tool.cibuildwheel]
+build = "cp312-*"
+skip = "*musllinux* *-win32"
+test-skip = "*"
+
+[tool.cibuildwheel.linux]
+environment-pass = ["http_proxy", "https_proxy", "no_proxy"]
+before-all = "yum install -y clang"
+
+[tool.cibuildwheel.linux.environment]
+CC = "clang"
+CXX = "clang++"
