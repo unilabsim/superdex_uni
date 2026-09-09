@@ -64,7 +64,7 @@ jobs:
 
       - name: Publish to TestPyPI
         if: inputs.target == 'testpypi'
-        uses: pypa/gh-action-pypi-publish@106e0b0b7c337fa67ed433972f777c6357f78598 # v1.13.0
+        uses: pypa/gh-action-pypi-publish@cef221092ed1bacb1cc03d23a2d87d1d172e277b # v1.14.0
         with:
           repository-url: https://test.pypi.org/legacy/
           packages-dir: wheelhouse
@@ -72,7 +72,7 @@ jobs:
 
       - name: Publish to PyPI
         if: inputs.target == 'pypi'
-        uses: pypa/gh-action-pypi-publish@106e0b0b7c337fa67ed433972f777c6357f78598 # v1.13.0
+        uses: pypa/gh-action-pypi-publish@cef221092ed1bacb1cc03d23a2d87d1d172e277b # v1.14.0
         with:
           packages-dir: wheelhouse
           # cp312 wheels of this version may already be on PyPI from an earlier
