@@ -58,7 +58,7 @@ jobs:
 
           wheels = sorted(p.name for p in Path("wheelhouse").glob("*.whl"))
           print("\n".join(wheels))
-          if len(wheels) != 2 or any("manylinux" not in w for w in wheels):
+          if len(wheels) != 4 or any("manylinux" not in w for w in wheels):
               raise SystemExit(f"incomplete or unrepaired wheelhouse: {wheels}")
           PY
 
@@ -68,9 +68,13 @@ jobs:
         with:
           repository-url: https://test.pypi.org/legacy/
           packages-dir: wheelhouse
+          skip-existing: true
 
       - name: Publish to PyPI
         if: inputs.target == 'pypi'
         uses: pypa/gh-action-pypi-publish@106e0b0b7c337fa67ed433972f777c6357f78598 # v1.13.0
         with:
           packages-dir: wheelhouse
+          # cp312 wheels of this version may already be on PyPI from an earlier
+          # run; only the newly added ABI wheels (e.g. cp313) get uploaded.
+          skip-existing: true

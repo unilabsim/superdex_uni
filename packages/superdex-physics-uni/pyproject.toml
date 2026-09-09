@@ -15,7 +15,7 @@ build-backend = "scikit_build_core.build"
 [project]
 name = "superdex-physics-uni"  # [uni] renamed from superdex-physics
 version = "1.0.0"
-requires-python = ">=3.12,<3.13"
+requires-python = ">=3.12,<3.14"
 authors = [{name = "SuperDex Team"}, {name = "unilabsim"}]
 description = "Physics runtime for SuperDex (unilabsim temporary build with the native batch executor)"
 readme = "README.md"
@@ -68,8 +68,9 @@ CC = { env = "CC" }
 CXX = { env = "CXX" }
 
 [tool.scikit-build.cmake]
-# [uni] points into the pinned vendor submodule instead of "../../..".
-source-dir = "../../vendor/project_superdex"
+# [uni] points into the staged vendor copy (tools/stage_sources.py; the only
+# source patch there relaxes the CMake Python range for cp313).
+source-dir = "../../stage/project_superdex"
 args = [
     "-GNinja",
     "-DMOCHI_BUILD_DEBUGGER=OFF",
@@ -81,7 +82,7 @@ args = [
 ]
 
 [tool.cibuildwheel]
-build = "cp312-*"
+build = "cp312-* cp313-*"
 skip = "*musllinux* *-win32"
 test-skip = "*"
 

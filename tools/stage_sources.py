@@ -9,6 +9,11 @@ Renames (error-message text only, no behavior change):
   - superdex/physics/_native_payload.py: distribution "superdex-physics" ->
     "superdex-physics-uni"; the fp64 sibling name is left untouched because this
     channel ships no fp64 package.
+
+Also stages a full copy of the vendored engine source at stage/project_superdex
+(gitignored) and relaxes the two hardcoded CMake Python version ranges
+(3.12...3.12.99 -> 3.12...3.13.99) so cp313 wheels can be built. This is a
+packaging-only patch: it widens the interpreter search window, nothing else.
 """
 
 from __future__ import annotations
@@ -18,6 +23,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 VENDOR = ROOT / "vendor" / "project_superdex"
+STAGE_SOURCE = ROOT / "stage" / "project_superdex"
 
 # package dir -> (facade source dir, upstream wheel dir holding LICENSE etc.)
 PACKAGES = {
@@ -65,5 +71,30 @@ def stage() -> None:
         print(f"staged {package}: {facade_dst}")
 
 
+SOURCE_PATCHES = {
+    "superdex_physics/libraries/mochi/CMakeLists.txt": [
+        ("find_package(Python3 3.12...3.12.99", "find_package(Python3 3.12...3.13.99"),
+    ],
+    "superdex_physics/libraries/mochi/third_party/CMakeLists.txt": [
+        ("find_package(Python3 3.12...3.12.99", "find_package(Python3 3.12...3.13.99"),
+    ],
+}
+
+
+def stage_source_tree() -> None:
+    if not STAGE_SOURCE.exists():
+        shutil.copytree(VENDOR, STAGE_SOURCE, ignore=shutil.ignore_patterns(".git"))
+    for relpath, replacements in SOURCE_PATCHES.items():
+        target = STAGE_SOURCE / relpath
+        text = target.read_text()
+        for old, new in replacements:
+            if old not in text and new not in text:
+                raise RuntimeError(f"patch anchor missing in {relpath}: {old!r}")
+            text = text.replace(old, new)
+        target.write_text(text)
+        print(f"patched {relpath}")
+
+
 if __name__ == "__main__":
     stage()
+    stage_source_tree()

@@ -34,6 +34,7 @@ def main() -> None:
     import stage_sources
 
     stage_sources.stage()
+    stage_sources.stage_source_tree()
     args.output.mkdir(parents=True, exist_ok=True)
     for package in PACKAGES:
         package_dir = ROOT / "packages" / package

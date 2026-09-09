@@ -29,7 +29,7 @@ for the robotics pair. Downstream environments must resolve exactly one pair.
 pip install superdex-robotics-uni==1.0.0  # pulls superdex-physics-uni==1.0.0
 ```
 
-Requires CPython 3.12 on Linux x86_64 (the only validated platform; macOS/Windows
+Requires CPython 3.12 or 3.13 on Linux x86_64 (the only validated platform; macOS/Windows
 wheels are intentionally not published).
 
 ## Build

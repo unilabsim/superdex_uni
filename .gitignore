@@ -4,6 +4,9 @@ packages/*/LICENSE
 packages/*/NOTICE
 packages/*/thirdparty_licenses/
 
+# Staged engine source tree (tools/stage_sources.py)
+stage/
+
 # Build outputs
 build/
 dist/

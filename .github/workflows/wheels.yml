@@ -56,11 +56,16 @@ jobs:
 
           wheels = sorted(p.name for p in Path("wheelhouse").glob("*.whl"))
           print("\n".join(wheels))
-          if len(wheels) != 2:
-              raise SystemExit(f"expected exactly 2 wheels, got {wheels}")
-          for name, dist in zip(wheels, ("superdex_physics_uni", "superdex_robotics_uni"), strict=True):
-              if not (name.startswith(f"{dist}-1.0.0-cp312-cp312-manylinux") and name.endswith("_x86_64.whl")):
+          if len(wheels) != 4:
+              raise SystemExit(f"expected exactly 4 wheels, got {wheels}")
+          for name in wheels:
+              dist = name.split("-1.0.0-")[0]
+              if dist not in ("superdex_physics_uni", "superdex_robotics_uni"):
                   raise SystemExit(f"unexpected wheel: {name}")
+              if not ("cp312-cp312-manylinux" in name or "cp313-cp313-manylinux" in name):
+                  raise SystemExit(f"unexpected wheel tag: {name}")
+              if not name.endswith("_x86_64.whl"):
+                  raise SystemExit(f"unexpected platform: {name}")
           PY
 
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
