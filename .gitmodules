@@ -1,0 +1,3 @@
+[submodule "vendor/project_superdex"]
+	path = vendor/project_superdex
+	url = https://github.com/unilabsim/project_superdex.git
