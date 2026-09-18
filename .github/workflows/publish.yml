@@ -1,5 +1,5 @@
 # Publish the wheelhouse artifact from a completed wheels run.
-# Modeled on the upstream project_superdex publish workflow, reduced to two
+# Modeled on the upstream project_superdex publish workflow, reduced to four
 # wheels and gated on tagged refs. PyPI publication uses Trusted Publishing;
 # configure the publisher for superdex-physics-uni / superdex-robotics-uni on
 # PyPI before using target=pypi.
@@ -59,7 +59,10 @@ jobs:
           wheels = sorted(p.name for p in Path("wheelhouse").glob("*.whl"))
           print("\n".join(wheels))
           if len(wheels) != 4 or any("manylinux" not in w for w in wheels):
-              raise SystemExit(f"incomplete or unrepaired wheelhouse: {wheels}")
+            raise SystemExit(f"incomplete or unrepaired wheelhouse: {wheels}")
+          versions = {w.split("-")[1] for w in wheels}
+          if versions != {"1.1.0"}:
+            raise SystemExit(f"expected version 1.1.0, got {sorted(versions)}")
           PY
 
       - name: Publish to TestPyPI

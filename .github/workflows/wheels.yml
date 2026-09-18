@@ -1,6 +1,7 @@
-# Build the two superdex-uni wheels on ubuntu-22.04 and upload them as one flat
+# Build the four superdex-uni wheels on ubuntu-22.04 and upload them as one flat
 # wheelhouse artifact. Modeled on the upstream project_superdex wheels workflow,
-# reduced to the only platform this channel validates (Linux x86_64, cp312).
+# reduced to the only platform and ABIs this channel validates (Linux x86_64,
+# cp312/cp313).
 #
 # Manual dispatch is the only trigger. All build configuration lives in each
 # distribution's packages/*/pyproject.toml, never here, so this file and a local
@@ -59,7 +60,7 @@ jobs:
           if len(wheels) != 4:
               raise SystemExit(f"expected exactly 4 wheels, got {wheels}")
           for name in wheels:
-              dist = name.split("-1.0.0-")[0]
+              dist = name.split("-1.1.0-")[0]
               if dist not in ("superdex_physics_uni", "superdex_robotics_uni"):
                   raise SystemExit(f"unexpected wheel: {name}")
               if not ("cp312-cp312-manylinux" in name or "cp313-cp313-manylinux" in name):

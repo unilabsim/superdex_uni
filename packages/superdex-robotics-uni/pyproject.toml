@@ -16,19 +16,20 @@ build-backend = "scikit_build_core.build"
 
 [project]
 name = "superdex-robotics-uni"  # [uni] renamed from superdex-robotics
-version = "1.0.0"
+version = "1.1.0"
 requires-python = ">=3.12,<3.14"
 authors = [{name = "SuperDex Team"}, {name = "unilabsim"}]
 description = "Robotics bindings and runtime surfaces for SuperDex (unilabsim temporary build)"
 readme = "README.md"
 license = "Apache-2.0"
 license-files = ["LICENSE", "thirdparty_licenses/**/*"]
-dependencies = ["superdex-physics-uni==1.0.0"]  # [uni] renamed dependency edge
+dependencies = ["superdex-physics-uni==1.1.0"]  # [uni] renamed dependency edge
 classifiers = [
     "Development Status :: 4 - Beta",  # [uni] temporary channel, not upstream-stable
     "Intended Audience :: Developers",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
     "Topic :: Scientific/Engineering",
 ]
 
@@ -37,6 +38,7 @@ classifiers = [
 [project.urls]
 Homepage = "https://github.com/unilabsim/superdex-uni"
 Repository = "https://github.com/unilabsim/superdex-uni"
+Source = "https://github.com/unilabsim/project_superdex/pull/11/commits/973aaba5481b0279cdc764e8b73fc6a702c03fe7"
 
 [tool.uv]
 managed = false

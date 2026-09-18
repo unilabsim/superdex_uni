@@ -16,8 +16,8 @@ back to `superdex-physics`/`superdex-robotics` and this repository is archived.
 
 | package | mirrors | contents |
 | --- | --- | --- |
-| `superdex-physics-uni` | `superdex-physics` | `superdex.physics` facade + `_native/` payload with `SceneBatchExecutor` (indexed dispatch, selective readback, `step_control`) |
-| `superdex-robotics-uni` | `superdex-robotics` | `superdex.robotics` facade + `_native/` payload, rebuilt from the same vendored source; depends on `superdex-physics-uni==1.0.0` |
+| `superdex-physics-uni` | `superdex-physics` | `superdex.physics` facade + `_native/` payload with `SceneBatchExecutorV2` ABI 2 (multi-actor flattened layout, selective state writes, actor-offset `step_control`) |
+| `superdex-robotics-uni` | `superdex-robotics` | `superdex.robotics` facade + `_native/` payload, rebuilt from the same vendored source; depends on `superdex-physics-uni==1.1.0` |
 
 **Mutual exclusion:** `superdex-physics-uni` and upstream `superdex-physics` install
 into the same `superdex/physics/` path and must never be co-installed. The same holds
@@ -26,7 +26,7 @@ for the robotics pair. Downstream environments must resolve exactly one pair.
 ## Install
 
 ```bash
-pip install superdex-robotics-uni==1.0.0  # pulls superdex-physics-uni==1.0.0
+pip install superdex-robotics-uni==1.1.0  # pulls superdex-physics-uni==1.1.0
 ```
 
 Requires CPython 3.12 or 3.13 on Linux x86_64 (the only validated platform; macOS/Windows
@@ -52,8 +52,8 @@ Modeled on the upstream `wheels.yml` / `publish.yml` pair:
 
 1. Pin `vendor/project_superdex` to the intended commit (PR head).
 2. Run the `wheels` workflow manually; it uploads a flat `wheelhouse` artifact
-   (exactly 2 wheels: `superdex_physics_uni` + `superdex_robotics_uni`, cp312
-   manylinux x86_64).
+   (exactly 4 wheels: `superdex_physics_uni` + `superdex_robotics_uni` for
+   cp312 and cp313 manylinux x86_64).
 3. Publish from the wheelhouse, TestPyPI first, then PyPI. PyPI publication uses
    Trusted Publishing (configure the publisher on the PyPI project page for
    `superdex-physics-uni` / `superdex-robotics-uni`); `publish.yml` refuses to run
@@ -62,6 +62,12 @@ Modeled on the upstream `wheels.yml` / `publish.yml` pair:
 ## Relationship to upstream
 
 - Engine source: `vendor/project_superdex` (submodule, pinned SHA).
+- Current 1.1.0 candidate source: `973aaba5481b0279cdc764e8b73fc6a702c03fe7`
+  ([project_superdex#11](https://github.com/unilabsim/project_superdex/pull/11)).
+  Do not publish this candidate until that source PR is merged and the submodule
+  points to the resulting merged source head.
+- Packaging these wheels does not claim UniSim adapter support; that work
+  remains blocked until the rebuilt exact wheels are published and installed.
 - Packaging logic only; no task, reward, or downstream-adapter changes live here.
 - License: Apache-2.0, preserving `LICENSE` and `thirdparty_licenses/` from upstream
   in every wheel.
