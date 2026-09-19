@@ -14,7 +14,7 @@ build-backend = "scikit_build_core.build"
 
 [project]
 name = "superdex-physics-uni"  # [uni] renamed from superdex-physics
-version = "1.2.0"
+version = "1.3.0"
 requires-python = ">=3.12,<3.14"
 authors = [{name = "SuperDex Team"}, {name = "unilabsim"}]
 description = "Physics runtime for SuperDex (unilabsim temporary build with SceneBatchExecutorV3 ABI 3)"
@@ -50,7 +50,7 @@ classifiers = [
 [project.urls]
 Homepage = "https://github.com/unilabsim/superdex-uni"
 Repository = "https://github.com/unilabsim/superdex-uni"
-Source = "https://github.com/unilabsim/project_superdex/commit/8379ee08d059d0899746fdce3fc663f664356f97"
+Source = "https://github.com/unilabsim/project_superdex/commit/0ed957041092a30bb60d804e31591871741cf7e4"
 
 [tool.uv]
 managed = false
@@ -70,8 +70,7 @@ CC = { env = "CC" }
 CXX = { env = "CXX" }
 
 [tool.scikit-build.cmake]
-# [uni] points into the staged vendor copy (tools/stage_sources.py; the only
-# source patch there relaxes the CMake Python range for cp313).
+# [uni] points into the staged, unmodified vendor copy.
 source-dir = "../../stage/project_superdex"
 args = [
     "-GNinja",

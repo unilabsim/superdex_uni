@@ -7,12 +7,12 @@ upstream `superdex-physics` into the environment. Published from
 [unilabsim/superdex-uni](https://github.com/unilabsim/superdex-uni); will be
 retired once the upstream PR merges.
 
-Source commit for the 1.2.0 candidate:
-`8379ee08d059d0899746fdce3fc663f664356f97`
-([project_superdex#13](https://github.com/unilabsim/project_superdex/pull/13)).
-Do not publish this candidate until the wheels workflow for that exact submodule
+Source commit for the 1.3.0 release:
+`0ed957041092a30bb60d804e31591871741cf7e4`
+([project_superdex#14](https://github.com/unilabsim/project_superdex/pull/14)).
+Do not publish this release until the wheels workflow for that exact submodule
 provenance has succeeded.
-It requires `superdex-physics-uni==1.2.0`.
+It requires `superdex-physics-uni==1.3.0`.
 This package does not claim UniSim adapter support; that integration remains
 blocked until the source change and rebuilt wheels are published and installed.
 
