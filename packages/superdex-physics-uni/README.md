@@ -9,10 +9,10 @@ will be retired once the upstream PR merges into
 [facebookresearch/project_superdex](https://github.com/facebookresearch/project_superdex).
 
 Source commit for the 1.1.0 candidate:
-`973aaba5481b0279cdc764e8b73fc6a702c03fe7`
+`34a825082e7541e0156997a6a3187624204ffa96`
 ([project_superdex#11](https://github.com/unilabsim/project_superdex/pull/11)).
-Do not publish this candidate until that source PR is merged and the packaging
-submodule points to the resulting merged source head.
+Do not publish this candidate until the wheels workflow for that exact submodule
+provenance has succeeded.
 This package does not claim UniSim adapter support; that integration remains
 blocked until the source change and rebuilt wheels are published and installed.
 

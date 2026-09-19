@@ -50,7 +50,7 @@ classifiers = [
 [project.urls]
 Homepage = "https://github.com/unilabsim/superdex-uni"
 Repository = "https://github.com/unilabsim/superdex-uni"
-Source = "https://github.com/unilabsim/project_superdex/pull/11/commits/973aaba5481b0279cdc764e8b73fc6a702c03fe7"
+Source = "https://github.com/unilabsim/project_superdex/commit/34a825082e7541e0156997a6a3187624204ffa96"
 
 [tool.uv]
 managed = false

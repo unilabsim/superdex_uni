@@ -50,7 +50,7 @@ uv run tools/build_wheels.py --output wheelhouse --fast    # local iteration onl
 
 Modeled on the upstream `wheels.yml` / `publish.yml` pair:
 
-1. Pin `vendor/project_superdex` to the intended commit (PR head).
+1. Pin `vendor/project_superdex` to the intended merged source commit.
 2. Run the `wheels` workflow manually; it uploads a flat `wheelhouse` artifact
    (exactly 4 wheels: `superdex_physics_uni` + `superdex_robotics_uni` for
    cp312 and cp313 manylinux x86_64).
@@ -62,10 +62,10 @@ Modeled on the upstream `wheels.yml` / `publish.yml` pair:
 ## Relationship to upstream
 
 - Engine source: `vendor/project_superdex` (submodule, pinned SHA).
-- Current 1.1.0 candidate source: `973aaba5481b0279cdc764e8b73fc6a702c03fe7`
-  ([project_superdex#11](https://github.com/unilabsim/project_superdex/pull/11)).
-  Do not publish this candidate until that source PR is merged and the submodule
-  points to the resulting merged source head.
+- Current 1.1.0 candidate source: `34a825082e7541e0156997a6a3187624204ffa96`
+  (merged [project_superdex#11](https://github.com/unilabsim/project_superdex/pull/11)).
+  Do not publish this candidate until the wheels workflow for that exact
+  submodule provenance has succeeded.
 - Packaging these wheels does not claim UniSim adapter support; that work
   remains blocked until the rebuilt exact wheels are published and installed.
 - Packaging logic only; no task, reward, or downstream-adapter changes live here.
