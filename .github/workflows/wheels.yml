@@ -60,7 +60,7 @@ jobs:
           if len(wheels) != 4:
               raise SystemExit(f"expected exactly 4 wheels, got {wheels}")
           for name in wheels:
-              dist = name.split("-1.1.0-")[0]
+              dist = name.split("-1.2.0-")[0]
               if dist not in ("superdex_physics_uni", "superdex_robotics_uni"):
                   raise SystemExit(f"unexpected wheel: {name}")
               if not ("cp312-cp312-manylinux" in name or "cp313-cp313-manylinux" in name):

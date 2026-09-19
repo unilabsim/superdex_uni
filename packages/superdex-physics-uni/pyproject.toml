@@ -14,10 +14,10 @@ build-backend = "scikit_build_core.build"
 
 [project]
 name = "superdex-physics-uni"  # [uni] renamed from superdex-physics
-version = "1.1.0"
+version = "1.2.0"
 requires-python = ">=3.12,<3.14"
 authors = [{name = "SuperDex Team"}, {name = "unilabsim"}]
-description = "Physics runtime for SuperDex (unilabsim temporary build with SceneBatchExecutorV2 ABI 2)"
+description = "Physics runtime for SuperDex (unilabsim temporary build with SceneBatchExecutorV3 ABI 3)"
 readme = "README.md"
 license = "Apache-2.0"
 license-files = ["LICENSE", "thirdparty_licenses/**/*"]
@@ -50,7 +50,7 @@ classifiers = [
 [project.urls]
 Homepage = "https://github.com/unilabsim/superdex-uni"
 Repository = "https://github.com/unilabsim/superdex-uni"
-Source = "https://github.com/unilabsim/project_superdex/commit/34a825082e7541e0156997a6a3187624204ffa96"
+Source = "https://github.com/unilabsim/project_superdex/commit/8379ee08d059d0899746fdce3fc663f664356f97"
 
 [tool.uv]
 managed = false

@@ -16,8 +16,8 @@ back to `superdex-physics`/`superdex-robotics` and this repository is archived.
 
 | package | mirrors | contents |
 | --- | --- | --- |
-| `superdex-physics-uni` | `superdex-physics` | `superdex.physics` facade + `_native/` payload with `SceneBatchExecutorV2` ABI 2 (multi-actor flattened layout, selective state writes, actor-offset `step_control`) |
-| `superdex-robotics-uni` | `superdex-robotics` | `superdex.robotics` facade + `_native/` payload, rebuilt from the same vendored source; depends on `superdex-physics-uni==1.1.0` |
+| `superdex-physics-uni` | `superdex-physics` | `superdex.physics` facade + `_native/` payload with `SceneBatchExecutorV3` ABI 3 (multi-actor flattened layout, selective state/boundary-condition writes, actor-offset `step_control`); ABI 2 remains available |
+| `superdex-robotics-uni` | `superdex-robotics` | `superdex.robotics` facade + `_native/` payload, rebuilt from the same vendored source; depends on `superdex-physics-uni==1.2.0` |
 
 **Mutual exclusion:** `superdex-physics-uni` and upstream `superdex-physics` install
 into the same `superdex/physics/` path and must never be co-installed. The same holds
@@ -26,7 +26,7 @@ for the robotics pair. Downstream environments must resolve exactly one pair.
 ## Install
 
 ```bash
-pip install superdex-robotics-uni==1.1.0  # pulls superdex-physics-uni==1.1.0
+pip install superdex-robotics-uni==1.2.0  # pulls superdex-physics-uni==1.2.0
 ```
 
 Requires CPython 3.12 or 3.13 on Linux x86_64 (the only validated platform; macOS/Windows
@@ -62,8 +62,8 @@ Modeled on the upstream `wheels.yml` / `publish.yml` pair:
 ## Relationship to upstream
 
 - Engine source: `vendor/project_superdex` (submodule, pinned SHA).
-- Current 1.1.0 candidate source: `34a825082e7541e0156997a6a3187624204ffa96`
-  (merged [project_superdex#11](https://github.com/unilabsim/project_superdex/pull/11)).
+- Current 1.2.0 candidate source: `8379ee08d059d0899746fdce3fc663f664356f97`
+  (merged [project_superdex#13](https://github.com/unilabsim/project_superdex/pull/13)).
   Do not publish this candidate until the wheels workflow for that exact
   submodule provenance has succeeded.
 - Packaging these wheels does not claim UniSim adapter support; that work

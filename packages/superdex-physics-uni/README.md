@@ -1,16 +1,17 @@
 # superdex-physics-uni
 
 Temporary unilabsim build of the SuperDex physics runtime
-(`superdex.physics`), carrying the native `SceneBatchExecutorV2` ABI 2
-(multi-actor flattened layout, selective state writes, actor-offset
-`step_control`).
+(`superdex.physics`), carrying the native `SceneBatchExecutorV3` ABI 3
+(multi-actor flattened layout, selective state writes, selective
+boundary-condition writes, actor-offset `step_control`). The ABI 2 executor
+remains available and reports ABI 2.
 Published from [unilabsim/superdex-uni](https://github.com/unilabsim/superdex-uni);
 will be retired once the upstream PR merges into
 [facebookresearch/project_superdex](https://github.com/facebookresearch/project_superdex).
 
-Source commit for the 1.1.0 candidate:
-`34a825082e7541e0156997a6a3187624204ffa96`
-([project_superdex#11](https://github.com/unilabsim/project_superdex/pull/11)).
+Source commit for the 1.2.0 candidate:
+`8379ee08d059d0899746fdce3fc663f664356f97`
+([project_superdex#13](https://github.com/unilabsim/project_superdex/pull/13)).
 Do not publish this candidate until the wheels workflow for that exact submodule
 provenance has succeeded.
 This package does not claim UniSim adapter support; that integration remains
